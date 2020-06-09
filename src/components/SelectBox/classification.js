@@ -7,10 +7,17 @@ import { lighten, darken } from 'polished';
 import * as ActivityActions from '../../store/modules/activity/actions';
 
 const options = [
-  { value: 'Incidente', label: 'Incidente', color: '#5B91CC', rating: 'OLA' },
-  { value: 'Projeto', label: 'Projeto', color: '#F89648' },
-  { value: 'Análise', label: 'Análise', color: '#6EA469' },
-  { value: 'Suporte', label: 'Suporte', color: '#E13C47' },
+  { value: 'Incidente', label: 'Incidente', color: '#5B91CC'},
+  { value: 'Consultas', label: 'Consultas', color: '#5B91CC'},
+  { value: 'Diagnostico', label: 'Diagnóstico', color: '#5B91CC'},
+  { value: 'Analise', label: 'Análise', color: '#5B91CC'},
+  { value: 'Projeto', label: 'Projeto', color: '#5B91CC'},
+  { value: 'Construcao', label: 'Construção', color: '#5B91CC'},
+  { value: 'Documentacao', label: 'Documentação', color: '#5B91CC'},
+  { value: 'Homologacao', label: 'Homologação', color: '#5B91CC'},
+  { value: 'Qualidade', label: 'Qualidade', color: '#5B91CC'},
+  { value: 'Implantacao', label: 'Implantação', color: '#5B91CC'},
+  { value: 'GP', label: 'GP', color: '#5B91CC'},
 ];
 
 const DefaultStyles = {

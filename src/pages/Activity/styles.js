@@ -34,6 +34,7 @@ export const Header = styled.div`
       padding: 2px;
       display: flex;
       justify-content: center;
+      align-items: center;
       border: 0;
       border-radius: 2px;
       background: #292f4c;
