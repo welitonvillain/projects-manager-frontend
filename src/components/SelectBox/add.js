@@ -100,7 +100,7 @@ export default function SelectAdd() {
   return (
     <CreatableSelect
       isClearable
-      placeholder="Pesquisar Projetos"
+      placeholder="Adicionar Projetos"
       styles={DefaultStyles}
       options={options}
       onInputChange={e => handleSearch(e)}

@@ -1,13 +1,16 @@
 import produce, { original } from 'immer';
+import { uuid } from 'uuidv4';
 import { set, isBefore, addMinutes, format, formatISO } from 'date-fns';
 
 const INITIAL_STATE = {
+  uniqueId: uuid().split('-')[0],
   search: [],
   isSearching: false,
   selectedProject: null,
+
   date: null,
 
-  activities: [],
+  activities: { 1: [], 2: [], 3: [], 4: [], 5: [] },
   hours: [],
 
   actProjects: [
@@ -41,21 +44,22 @@ export default function activity(state = INITIAL_STATE, action) {
       return produce(state, draft => {
         const { selectedProject, actProjects } = state;
 
-        function check(e) {
-          return e.value === selectedProject.value;
-        }
+        if (!selectedProject) return;
 
-        const duplicate = actProjects.find(check);
+        const duplicate = actProjects.find(
+          e => e.value === selectedProject.value
+        );
 
         if (!duplicate) {
           draft.actProjects = [...actProjects, selectedProject];
         }
       });
 
-    case '@activity/SET_DATE':
+    case '@activity/SET_DATE': {
       return produce(state, draft => {
         draft.date = action.payload.date;
       });
+    }
 
     case '@activity/INIT_DATE':
       return produce(state, draft => {
@@ -78,8 +82,17 @@ export default function activity(state = INITIAL_STATE, action) {
         }
       });
 
+    case '@activity/RESET_ACTIVITIES':
+      return produce(state, draft => {
+        draft.activities = { 1: [], 2: [], 3: [], 4: [], 5: [] };
+      });
+
     case '@activity/CREATE_NEW_ACTIVITY':
       return produce(state, draft => {
+        const { day } = action.payload;
+
+        const activitiesArray = draft.activities;
+
         const row = {
           activity: '',
           description: '',
@@ -87,25 +100,35 @@ export default function activity(state = INITIAL_STATE, action) {
           start: '',
           end: '',
           id: null,
+          db: false,
         };
 
-        row.id = state.activities.length + 1;
-        draft.activities = [...state.activities, row];
+        row.id = state.uniqueId;
+        activitiesArray[day.toString()].push(row);
+
+        console.log(state.activities);
+
+        draft.activities = activitiesArray;
+        // eslint-disable-next-line prefer-destructuring
+        draft.uniqueId = uuid().split('-')[0];
       });
 
     case '@activity/TABLE_PROJECT':
       return produce(state, draft => {
         const { id, project } = action.payload;
 
-        const index = draft.activities.findIndex(e => e.id === id);
-        const object = original(draft.activities[index]);
+        const index = draft.activities[id.substr(0, 1)].findIndex(
+          e => e.id === id.substr(1)
+        );
+
+        const object = original(draft.activities[id.substr(0, 1)][index]);
 
         const data = { ...object };
 
         data.activity = project;
 
         if (index >= 0) {
-          draft.activities.splice(index, 1, data);
+          draft.activities[id.substr(0, 1)].splice(index, 1, data);
         }
       });
 
@@ -113,15 +136,16 @@ export default function activity(state = INITIAL_STATE, action) {
       return produce(state, draft => {
         const { id, classification } = action.payload;
 
-        const index = draft.activities.findIndex(e => e.id === id);
-        const object = original(draft.activities[index]);
+        const index = draft.activities[id.substr(0, 1)].findIndex(
+          e => e.id === id.substr(1)
+        );
+        const object = original(draft.activities[id.substr(0, 1)][index]);
 
         const data = { ...object };
-
         data.classification = classification;
 
         if (index >= 0) {
-          draft.activities.splice(index, 1, data);
+          draft.activities[id.substr(0, 1)].splice(index, 1, data);
         }
       });
 
@@ -129,17 +153,17 @@ export default function activity(state = INITIAL_STATE, action) {
       return produce(state, draft => {
         const { id, description } = action.payload;
 
-        const index = draft.activities.findIndex(
-          e => e.id === parseInt(id, 10)
+        const index = draft.activities[id.substr(0, 1)].findIndex(
+          e => e.id === id.substr(1)
         );
-        const object = original(draft.activities[index]);
+        const object = original(draft.activities[id.substr(0, 1)][index]);
 
         const data = { ...object };
 
         data.description = description;
 
         if (index >= 0) {
-          draft.activities.splice(index, 1, data);
+          draft.activities[id.substr(0, 1)].splice(index, 1, data);
         }
       });
 
@@ -147,8 +171,12 @@ export default function activity(state = INITIAL_STATE, action) {
       return produce(state, draft => {
         const { id, name, hour } = action.payload;
 
-        const indexActivity = draft.activities.findIndex(e => e.id === id);
-        const objectActivity = original(draft.activities[indexActivity]);
+        const indexActivity = draft.activities[id.substr(0, 1)].findIndex(
+          e => e.id === id.substr(1)
+        );
+        const objectActivity = original(
+          draft.activities[id.substr(0, 1)][indexActivity]
+        );
 
         const dataActivity = { ...objectActivity };
 
@@ -158,7 +186,11 @@ export default function activity(state = INITIAL_STATE, action) {
           const indexHour = draft.hours.findIndex(e => e.value === hour);
 
           draft.hours.splice(0, indexHour + 1);
-          draft.activities.splice(indexActivity, 1, dataActivity);
+          draft.activities[id.substr(0, 1)].splice(
+            indexActivity,
+            1,
+            dataActivity
+          );
         }
 
         if (name === 'end') {
@@ -167,10 +199,12 @@ export default function activity(state = INITIAL_STATE, action) {
           const indexHour = draft.hours.findIndex(e => e.value === hour);
 
           draft.hours.splice(0, indexHour);
-          draft.activities.splice(indexActivity, 1, dataActivity);
+          draft.activities[id.substr(0, 1)].splice(
+            indexActivity,
+            1,
+            dataActivity
+          );
         }
-
-        console.log(state.activities);
       });
 
     case '@activity/SUCCESS_ACTIVITIES':
@@ -189,7 +223,6 @@ export default function activity(state = INITIAL_STATE, action) {
           });
 
           draft.activities = [];
-          console.log(activitiesErrors);
           draft.activities = activitiesErrors;
         } else {
           draft.activities = [];
@@ -199,17 +232,16 @@ export default function activity(state = INITIAL_STATE, action) {
     case '@activity/DELETE_ACTIVITY':
       return produce(state, draft => {
         const { id } = action.payload;
-        console.log('ID: ', id);
-        const index = draft.activities.findIndex(
-          element => element.id === parseInt(id, 10)
+
+        const index = draft.activities[id.substr(0, 1)].findIndex(
+          e => e.id === id.substr(1)
         );
-        console.log('INDEX', index);
+
+        console.log(id);
 
         if (index >= 0) {
-          draft.activities.splice(index, 1);
+          draft.activities[id.substr(0, 1)].splice(index, 1);
         }
-
-        console.log(state.activities);
       });
 
     default:

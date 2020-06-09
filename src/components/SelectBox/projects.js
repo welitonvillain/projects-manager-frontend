@@ -108,5 +108,5 @@ export default function SelectProjects(props) {
 }
 
 SelectProjects.propTypes = {
-  identifier: PropTypes.number.isRequired,
+  identifier: PropTypes.string.isRequired,
 };

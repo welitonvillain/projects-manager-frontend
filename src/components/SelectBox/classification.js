@@ -105,6 +105,8 @@ export default function SelectClassification(props) {
     );
   }
 
+  console.log('CLASS: ', props.identifier);
+
   return (
     <Select
       styles={DefaultStyles}
@@ -121,5 +123,5 @@ export default function SelectClassification(props) {
 }
 
 SelectClassification.propTypes = {
-  identifier: PropTypes.number.isRequired,
+  identifier: PropTypes.string.isRequired,
 };

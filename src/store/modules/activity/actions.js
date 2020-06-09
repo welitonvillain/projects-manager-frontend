@@ -54,9 +54,16 @@ export function initDate(date) {
   };
 }
 
-export function createActivity() {
+export function resetActivities() {
+  return {
+    type: '@activity/RESET_ACTIVITIES',
+  };
+}
+
+export function createActivity(day) {
   return {
     type: '@activity/CREATE_NEW_ACTIVITY',
+    payload: { day },
   };
 }
 
@@ -96,7 +103,6 @@ export function requestActivities(activities) {
 }
 
 export function successActivities(errors) {
-  console.log('AQUIII');
   return {
     type: '@activity/SUCCESS_ACTIVITIES',
     payload: { errors },

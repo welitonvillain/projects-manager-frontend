@@ -1,10 +1,18 @@
 import React from 'react';
-import Select from 'react-select';
+import CreatableSelect from 'react-select/creatable';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { lighten, darken } from 'polished';
 
 import * as ActivityActions from '../../store/modules/activity/actions';
+
+const options = [
+  { value: '0800', label: '08:00' },
+  { value: '0900', label: '09:00' },
+  { value: '1000', label: '10:00' },
+  { value: '1100', label: '11:00' },
+  { value: '1200', label: '12:00' },
+];
 
 const DefaultStyles = {
   container: styles => ({
@@ -108,14 +116,15 @@ const IndicatorsContainer = () => {
 export default function SelectHour(props) {
   const { identifier, name } = props;
   const dispatch = useDispatch();
-  const options = useSelector(state => state.activity.hours);
 
   function handleChangeHour(e) {
     dispatch(ActivityActions.hourTable(identifier, name, e.value));
+    if (name === 'end')
+      dispatch(ActivityActions.createActivity(identifier.substr(0, 1)));
   }
 
   return (
-    <Select
+    <CreatableSelect
       styles={DefaultStyles}
       className="hrSelect"
       options={options}
@@ -132,6 +141,6 @@ export default function SelectHour(props) {
 }
 
 SelectHour.propTypes = {
-  identifier: PropTypes.number.isRequired,
+  identifier: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
 };
