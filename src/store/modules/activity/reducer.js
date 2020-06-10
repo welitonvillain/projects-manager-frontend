@@ -91,7 +91,11 @@ export default function activity(state = INITIAL_STATE, action) {
       return produce(state, draft => {
         const { day } = action.payload;
 
+        const stringDay = day.toString();
         const activitiesArray = draft.activities;
+
+        const index = activitiesArray[stringDay].length - 1;
+        if (index !== -1 && activitiesArray[stringDay][index].end === '') return;
 
         const row = {
           activity: '',
@@ -104,13 +108,13 @@ export default function activity(state = INITIAL_STATE, action) {
         };
 
         row.id = state.uniqueId;
-        activitiesArray[day.toString()].push(row);
-
-        console.log(state.activities);
+        activitiesArray[stringDay].push(row);
 
         draft.activities = activitiesArray;
         // eslint-disable-next-line prefer-destructuring
         draft.uniqueId = uuid().split('-')[0];
+
+        console.log(state.activities)
       });
 
     case '@activity/TABLE_PROJECT':

@@ -26,15 +26,3 @@ export default function Sidebar() {
     </Wrapper>
   );
 }
-
-/*
-
-FaChartLine, FaUserCog
-
-          <Option to="/">
-            <FaChartLine size="32" />
-          </Option>
-          <Option to="/">
-            <FaUserCog size="32" />
-          </Option>
-*/

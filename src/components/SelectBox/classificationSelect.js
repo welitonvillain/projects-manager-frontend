@@ -111,9 +111,7 @@ export default function SelectClassification(props) {
       ActivityActions.selectedTableClassification(props.identifier, e.value)
     );
   }
-
-  console.log('CLASS: ', props.identifier);
-
+  
   return (
     <Select
       styles={DefaultStyles}

@@ -1,40 +1,21 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { debounce } from 'lodash';
-import {
-  getDay,
-  setDay,
-  addDays,
-  subDays,
-  getMonth,
-  format,
-  getWeek,
-  addWeeks,
-  subWeeks,
-} from 'date-fns';
+import { setDay, format, getWeek, addWeeks, subWeeks } from 'date-fns';
 import pt from 'date-fns/locale/pt';
 
 import { FaPlus, FaAngleRight, FaAngleLeft } from 'react-icons/fa';
 
-import SelectClassification from '../../components/SelectBox/classification';
-import SelectProjects from '../../components/SelectBox/projects';
-import SelectHour from '../../components/SelectBox/hour';
-import SelectAdd from '../../components/SelectBox/add';
+import { formatedWeeksNavigation, getDayOfWeek } from '../../functions/date';
+
+import SelectClassification from '../../components/SelectBox/classificationSelect';
+import SelectProjects from '../../components/SelectBox/projectSelect';
+import SelectHour from '../../components/SelectBox/hourSelect';
+import SelectAdd from '../../components/SelectBox/addSelect';
 
 import * as ActivityActions from '../../store/modules/activity/actions';
 
-import {
-  Wrapper,
-  Header,
-  Title,
-  Content,
-  Weeks,
-  Activities,
-  Days,
-  Add,
-  Table,
-  ActivityTable,
-} from './styles';
+import { Wrapper, Header, Title, Content, Weeks, Activities, Days, Table } from './styles';
 
 export default function Activity() {
   const dispatch = useDispatch();
@@ -42,34 +23,9 @@ export default function Activity() {
   const activities = useSelector(state => state.activity.activities);
   const [week, setWeek] = useState(setDay(new Date(), 1));
 
-  const weekFormated = useMemo(() => {
-    const finalWeek = addDays(week, 4);
+  const weekFormated = useMemo(() => formatedWeeksNavigation(week), [week]);
 
-    return getMonth(finalWeek) !== getMonth(week)
-      ? format(week, "dd 'de' MMMM 'a' ", { locale: pt }) +
-          format(finalWeek, "dd 'de' MMMM", { locale: pt })
-      : format(week, "dd 'a' ") +
-          format(finalWeek, "dd 'de' MMMM", { locale: pt });
-  }, [week]);
-
-  const daysOfWeek = useMemo(() => {
-    const days = [];
-
-    if (getWeek(week) === getWeek(new Date())) {
-      const indexDay = getDay(new Date());
-      for (let i = 0; i <= indexDay - 1; i += 1) {
-        days.push({ id: indexDay - i, date: subDays(new Date(), i) });
-      }
-
-      return days;
-    }
-
-    for (let i = 4; i >= 0; i -= 1) {
-      days.push({ id: i + 1, date: addDays(week, i) });
-    }
-
-    return days;
-  }, [week]);
+  const daysOfWeek = useMemo(() => getDayOfWeek(week), [week]);
 
   useEffect(() => {
     dispatch(ActivityActions.setDate(new Date()));
@@ -136,7 +92,7 @@ export default function Activity() {
               <div className="day">
                 <span>{format(day.date, "EEEE',' dd ", { locale: pt })}</span>
               </div>
-              <Table>
+              <Table daysOfWeek={day.id}>
                 <thead>
                   <tr>
                     <th id="act"> </th>
@@ -242,100 +198,3 @@ export default function Activity() {
     </Wrapper>
   );
 }
-
-/*
-
-  function handleSetDate(e) {
-    dispatch(ActivityActions.initDate(e));
-  }
-
-  function handleAddProject() {
-    dispatch(ActivityActions.addProject());
-  }
-
-  function handleSubmitActivities() {
-    dispatch(ActivityActions.requestActivities(activities));
-  }
-  */
-
-/*
-      <Content>
-        <Add>
-          <div className="add-projects">
-            <SelectAdd />
-            <button type="button" onClick={handleAddProject}>
-              <FaPlus />
-            </button>
-          </div>
-          <div className="add-activities">
-            <button type="button" onClick={handleCreateActivity}>
-              <FaPlus />
-            </button>
-            <button
-              className="submit-button"
-              type="button"
-              onClick={handleSubmitActivities}
-            >
-              ENVIAR
-            </button>
-          </div>
-        </Add>
-        <ActivityTable>
-          <Table>
-            <thead>
-              <tr>
-                <th id="act">ATIVIDADE</th>
-                <th id="desc">DESCRIÇÃO</th>
-                <th id="class">CLASSIFICAÇÃO</th>
-                <th id="init">INÍCIO</th>
-                <th id="end">FIM</th>
-                <th id="delete"> </th>
-              </tr>
-            </thead>
-            <tbody>
-              {activities.map(e => (
-                <tr key={e}>
-                  <td>
-                    <SelectProjects identifier={e.id} />
-                  </td>
-                  <td>
-                    <div className="div-description">
-                      <input
-                        name={e.id}
-                        type="text"
-                        placeholder="Insira a descrição de sua atividade"
-                        onChange={event =>
-                          debounced(event.target.name, event.target.value)
-                        }
-                      />
-                    </div>
-                  </td>
-                  <td>
-                    <SelectClassification identifier={e.id} />
-                  </td>
-                  <td>
-                    <SelectHour identifier={e.id} name="start" />
-                  </td>
-                  <td>
-                    <SelectHour identifier={e.id} name="end" />
-                  </td>
-                  <td>
-                    <div className="div-delete">
-                      <button
-                        name={e.id}
-                        type="button"
-                        onClick={event =>
-                          handleDeleteActivity(event.target.name)
-                        }
-                      >
-                        X
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </Table>
-        </ActivityTable>
-      </Content>
-*/
