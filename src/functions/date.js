@@ -1,15 +1,5 @@
 import pt from 'date-fns/locale/pt';
-import {
-  getDay,
-  setDay,
-  addDays,
-  subDays,
-  getMonth,
-  format,
-  getWeek,
-  addWeeks,
-  subWeeks,
-} from 'date-fns';
+import { getDay, addDays, subDays, getMonth, format, getWeek } from 'date-fns';
 
 export function formatedWeeksNavigation(week) {
   const finalWeek = addDays(week, 4);
@@ -25,7 +15,8 @@ export function getDayOfWeek(week) {
   const days = [];
 
   if (getWeek(week) === getWeek(new Date())) {
-    const indexDay = getDay(new Date());
+    const indexDay = getDay(new Date()) === 6 ? 5 : getDay(new Date());
+
     for (let i = 0; i <= indexDay - 1; i += 1) {
       days.push({ id: indexDay - i, date: subDays(new Date(), i) });
     }

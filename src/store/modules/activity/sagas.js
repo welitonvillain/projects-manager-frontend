@@ -71,8 +71,12 @@ export function* searchProjects({ payload }) {
 }
 
 export function* postActivities({ payload }) {
+  const { activity } = payload;
+
+  console.log(activity);
+
   try {
-    const res = yield call(api.post, 'activities', payload.activities);
+    const res = yield call(api.post, 'activities', activity);
 
     const { data } = res;
 
@@ -80,7 +84,9 @@ export function* postActivities({ payload }) {
       toast.error(e.message);
     });
 
-    yield put(successActivities(data));
+    console.log(data);
+
+    // yield put(successActivities(data));
   } catch (err) {
     if (err.response.status === 401) {
       yield put(signOut());
@@ -90,6 +96,6 @@ export function* postActivities({ payload }) {
 
 export default all([
   takeLatest('@activity/REQUEST_LOAD_PROJECTS', loadProjects),
-  takeLatest('@activity/REQUEST_ACTIVITIES', postActivities),
+  takeLatest('@activity/REQUEST_POST_ACTIVITIES', postActivities),
   takeLatest('@activity/REQUEST_SEARCH_PROJECTS', searchProjects),
 ]);

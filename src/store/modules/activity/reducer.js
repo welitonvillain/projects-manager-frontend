@@ -1,14 +1,11 @@
 import produce, { original } from 'immer';
 import { uuid } from 'uuidv4';
-import { set, isBefore, addMinutes, format, formatISO } from 'date-fns';
 
 const INITIAL_STATE = {
   uniqueId: uuid().split('-')[0],
   search: [],
   isSearching: false,
   selectedProject: null,
-
-  date: null,
 
   activities: { 1: [], 2: [], 3: [], 4: [], 5: [] },
   hours: [],
@@ -55,33 +52,6 @@ export default function activity(state = INITIAL_STATE, action) {
         }
       });
 
-    case '@activity/SET_DATE': {
-      return produce(state, draft => {
-        draft.date = action.payload.date;
-      });
-    }
-
-    case '@activity/INIT_DATE':
-      return produce(state, draft => {
-        const { date } = action.payload;
-        draft.date = set(date, { hours: 7, minutes: 0, seconds: 0 });
-
-        const endDay = set(draft.date, { hours: 20, minutes: 0 });
-        let startDay = draft.date;
-
-        draft.hours = [];
-
-        while (isBefore(startDay, endDay)) {
-          draft.hours.push({
-            value: formatISO(startDay),
-            label: format(startDay, 'H:mm'),
-            isDisabled: false,
-          });
-
-          startDay = addMinutes(startDay, 15);
-        }
-      });
-
     case '@activity/RESET_ACTIVITIES':
       return produce(state, draft => {
         draft.activities = { 1: [], 2: [], 3: [], 4: [], 5: [] };
@@ -95,7 +65,8 @@ export default function activity(state = INITIAL_STATE, action) {
         const activitiesArray = draft.activities;
 
         const index = activitiesArray[stringDay].length - 1;
-        if (index !== -1 && activitiesArray[stringDay][index].end === '') return;
+        if (index !== -1 && activitiesArray[stringDay][index].end === '')
+          return;
 
         const row = {
           activity: '',
@@ -114,7 +85,7 @@ export default function activity(state = INITIAL_STATE, action) {
         // eslint-disable-next-line prefer-destructuring
         draft.uniqueId = uuid().split('-')[0];
 
-        console.log(state.activities)
+        console.log(state.activities);
       });
 
     case '@activity/TABLE_PROJECT':
@@ -212,26 +183,7 @@ export default function activity(state = INITIAL_STATE, action) {
       });
 
     case '@activity/SUCCESS_ACTIVITIES':
-      return produce(state, draft => {
-        const { errors } = action.payload;
-        const activitiesErrors = [];
-
-        if (errors.length > 0) {
-          errors.forEach(e => {
-            const index = draft.activities.findIndex(a => a.id === e.id);
-
-            if (index !== null) {
-              const element = draft.activities.slice(index, index + 1);
-              activitiesErrors.push(element[0]);
-            }
-          });
-
-          draft.activities = [];
-          draft.activities = activitiesErrors;
-        } else {
-          draft.activities = [];
-        }
-      });
+      return produce(state, draft => {});
 
     case '@activity/DELETE_ACTIVITY':
       return produce(state, draft => {

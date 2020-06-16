@@ -7,7 +7,7 @@ import { lighten, darken } from 'polished';
 import * as ActivityActions from '../../store/modules/activity/actions';
 
 const options = [
-  { value: '0700', label: '07:00', isDefault: true},
+  { value: '0700', label: '07:00', isDefault: true },
   { value: '0800', label: '08:00', isDefault: true },
   { value: '0900', label: '09:00', isDefault: true },
   { value: '1000', label: '10:00', isDefault: true },
@@ -121,25 +121,24 @@ const IndicatorsContainer = () => {
   return null;
 };
 
-function handleFormatOption(inputValue) {
-  if (inputValue.length === 4) inputValue = inputValue + ':';
-
-  console.log(inputValue)
-}
-
 export default function SelectHour(props) {
-  const { identifier, name } = props;
+  const { identifier, name, activity } = props;
   const dispatch = useDispatch();
 
   function handleChangeHour(e) {
-
     // Adiciona dois pontos (:) ao label de hora para padronizar e facilitar.
     if (!e.isDefault)
-      e.label = e.label.substr(0,2)+':'+e.label.substr(2,2);
+      e.label = `${e.label.substr(0, 2)}:${e.label.substr(2, 2)}`;
 
     dispatch(ActivityActions.hourTable(identifier, name, e.value));
+
     if (name === 'end') {
       dispatch(ActivityActions.createActivity(identifier.substr(0, 1)));
+
+      const object = { ...activity };
+      object.end = e.value;
+
+      dispatch(ActivityActions.requestPostActivities(object));
     }
   }
 

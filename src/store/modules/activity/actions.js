@@ -40,20 +40,6 @@ export function addProject() {
   };
 }
 
-export function setDate(date) {
-  return {
-    type: '@activity/SET_DATE',
-    payload: { date },
-  };
-}
-
-export function initDate(date) {
-  return {
-    type: '@activity/INIT_DATE',
-    payload: { date },
-  };
-}
-
 export function resetActivities() {
   return {
     type: '@activity/RESET_ACTIVITIES',
@@ -95,10 +81,10 @@ export function hourTable(id, name, hour) {
   };
 }
 
-export function requestActivities(activities) {
+export function requestPostActivities(activity) {
   return {
-    type: '@activity/REQUEST_ACTIVITIES',
-    payload: { activities },
+    type: '@activity/REQUEST_POST_ACTIVITIES',
+    payload: { activity },
   };
 }
 

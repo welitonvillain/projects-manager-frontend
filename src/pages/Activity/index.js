@@ -15,7 +15,16 @@ import SelectAdd from '../../components/SelectBox/addSelect';
 
 import * as ActivityActions from '../../store/modules/activity/actions';
 
-import { Wrapper, Header, Title, Content, Weeks, Activities, Days, Table } from './styles';
+import {
+  Wrapper,
+  Header,
+  Title,
+  Content,
+  Weeks,
+  Activities,
+  Days,
+  Table,
+} from './styles';
 
 export default function Activity() {
   const dispatch = useDispatch();
@@ -28,7 +37,6 @@ export default function Activity() {
   const daysOfWeek = useMemo(() => getDayOfWeek(week), [week]);
 
   useEffect(() => {
-    dispatch(ActivityActions.setDate(new Date()));
     dispatch(ActivityActions.requestProjects());
   }, []);
 
@@ -147,6 +155,7 @@ export default function Activity() {
                             day.id.toString() +
                             activities[day.id.toString()][e].id
                           }
+                          activity={null}
                           name="start"
                         />
                       </td>
@@ -156,6 +165,7 @@ export default function Activity() {
                             day.id.toString() +
                             activities[day.id.toString()][e].id
                           }
+                          activity={activities[day.id.toString()][e]}
                           name="end"
                         />
                       </td>
