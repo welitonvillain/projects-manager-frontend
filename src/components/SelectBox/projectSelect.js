@@ -84,12 +84,19 @@ const DropdownIndicator = () => {
 };
 
 export default function SelectProjects(props) {
+  const { identifier, activity } = props;
   const dispatch = useDispatch();
 
   const options = useSelector(state => state.activity.actProjects);
 
+  const defaultOptions = activity
+    ? activity.activity
+      ? { value: activity.activity, label: activity.activity }
+      : null
+    : null;
+
   function handleSelectedProject(e) {
-    dispatch(ActivityActions.selectedTableProject(props.identifier, e.value));
+    dispatch(ActivityActions.selectedTableProject(identifier, e.value));
   }
 
   return (
@@ -97,6 +104,7 @@ export default function SelectProjects(props) {
       styles={DefaultStyles}
       className="prjSelect"
       options={options}
+      defaultValue={defaultOptions}
       placeholder="Selecione"
       onChange={e => handleSelectedProject(e)}
       components={{

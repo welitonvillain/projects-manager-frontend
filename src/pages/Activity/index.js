@@ -38,6 +38,7 @@ export default function Activity() {
 
   useEffect(() => {
     dispatch(ActivityActions.requestProjects());
+    dispatch(ActivityActions.requestGetActivities('2020-06-15T05:00:00.000Z', '2020-06-19T23:59:00.000Z'));
   }, []);
 
   function handleIncrementWeek() {
@@ -124,6 +125,7 @@ export default function Activity() {
                             day.id.toString() +
                             activities[day.id.toString()][e].id
                           }
+                          activity={activities[day.id.toString()][e]}
                         />
                       </td>
                       <td>
@@ -133,6 +135,7 @@ export default function Activity() {
                               day.id.toString() +
                               activities[day.id.toString()][e].id
                             }
+                            activity={activities[day.id.toString()][e]}
                             type="text"
                             placeholder="Insira a descrição de sua atividade"
                             onChange={event =>
@@ -147,6 +150,8 @@ export default function Activity() {
                             day.id.toString() +
                             activities[day.id.toString()][e].id
                           }
+
+                          activity={activities[day.id.toString()][e]}
                         />
                       </td>
                       <td>
@@ -155,7 +160,7 @@ export default function Activity() {
                             day.id.toString() +
                             activities[day.id.toString()][e].id
                           }
-                          activity={null}
+                          activity={activities[day.id.toString()][e]}
                           name="start"
                         />
                       </td>

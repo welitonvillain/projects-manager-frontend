@@ -88,6 +88,20 @@ export function requestPostActivities(activity) {
   };
 }
 
+export function requestGetActivities(initial, final) {
+  return {
+    type: '@activity/REQUEST_GET_ACTIVITIES',
+    payload: { initial, final },
+  };
+}
+
+export function sucessGetActivities( data ) {
+  return {
+    type: '@activity/SUCESS_GET_ACTIVITIES',
+    payload: data,
+  }
+}
+
 export function successActivities(errors) {
   return {
     type: '@activity/SUCCESS_ACTIVITIES',

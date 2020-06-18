@@ -1,15 +1,26 @@
 import { all, call, put, takeLatest } from 'redux-saga/effects';
 import { toast } from 'react-toastify';
+import * as Yup from 'yup';
 
 import api from '../../../services/api';
 
-import { successProjects, returnProjects, successActivities } from './actions';
+import { successProjects, returnProjects, successActivities, sucessGetActivities } from './actions';
 import { signOut } from '../auth/actions';
+
+const schema = Yup.object().shape({
+  activity: Yup.string().required('Atividade Inválida'),
+  description: Yup.string().required('Descrição Inválida'),
+  classification: Yup.string().required('Classificação Inválida'),
+  start: Yup.string().required('Hora inicio Inválida'),
+  end: Yup.string().required('Hora final Inválida'),
+  id: Yup.string().required(),
+  db: Yup.boolean().required(),
+})
 
 // faz o carregamento inicial dos projetos já atuados pelo usuário
 export function* loadProjects() {
   try {
-    const res = yield call(api.get, 'activities');
+    const res = yield call(api.get, 'activities/projects');
 
     const { data } = res;
 
@@ -70,10 +81,33 @@ export function* searchProjects({ payload }) {
   }
 }
 
+export function* getActivities({ payload }) {
+  const { initial, final } = payload;
+
+  try {
+    const res = yield call(api.get, 'activities', { 
+      params: {
+        initial: initial,
+        final: final,
+      }
+    });
+
+    const { data } = res;
+
+    console.log(data);
+
+    yield put(sucessGetActivities(data));
+    
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+
 export function* postActivities({ payload }) {
   const { activity } = payload;
 
-  console.log(activity);
+  console.log(schema.isValid(activity));
 
   try {
     const res = yield call(api.post, 'activities', activity);
@@ -98,4 +132,5 @@ export default all([
   takeLatest('@activity/REQUEST_LOAD_PROJECTS', loadProjects),
   takeLatest('@activity/REQUEST_POST_ACTIVITIES', postActivities),
   takeLatest('@activity/REQUEST_SEARCH_PROJECTS', searchProjects),
+  takeLatest('@activity/REQUEST_GET_ACTIVITIES', getActivities),
 ]);

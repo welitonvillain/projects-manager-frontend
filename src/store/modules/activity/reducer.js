@@ -69,11 +69,11 @@ export default function activity(state = INITIAL_STATE, action) {
           return;
 
         const row = {
-          activity: '',
-          description: '',
-          classification: '',
-          start: '',
-          end: '',
+          activity: null,
+          description: null,
+          classification: null,
+          start: null,
+          end: null,
           id: null,
           db: false,
         };
@@ -193,11 +193,16 @@ export default function activity(state = INITIAL_STATE, action) {
           e => e.id === id.substr(1)
         );
 
-        console.log(id);
-
         if (index >= 0) {
           draft.activities[id.substr(0, 1)].splice(index, 1);
         }
+      });
+
+    case '@activity/SUCESS_GET_ACTIVITIES':
+      return produce(state, draft => {
+        const data = action.payload;
+
+        draft.activities = data;
       });
 
     default:

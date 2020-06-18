@@ -125,6 +125,17 @@ export default function SelectHour(props) {
   const { identifier, name, activity } = props;
   const dispatch = useDispatch();
 
+  const defaultOption = activity
+    ? name === 'end'
+      ? activity.end
+        ? { value: activity.end, label: activity.end }
+        : null
+      : activity.start
+      ? { value: activity.start, label: activity.start }
+      : null
+    : null;
+
+
   function handleChangeHour(e) {
     // Adiciona dois pontos (:) ao label de hora para padronizar e facilitar.
     if (!e.isDefault)
@@ -135,7 +146,7 @@ export default function SelectHour(props) {
     if (name === 'end') {
       dispatch(ActivityActions.createActivity(identifier.substr(0, 1)));
 
-      const object = { ...activity };
+      const object = { ...activity }; 
       object.end = e.value;
 
       dispatch(ActivityActions.requestPostActivities(object));
@@ -147,6 +158,7 @@ export default function SelectHour(props) {
       styles={DefaultStyles}
       className="hrSelect"
       options={options}
+      defaultValue={defaultOption}
       onChange={e => handleChangeHour(e)}
       placeholder="-"
       menuPlacement="auto"

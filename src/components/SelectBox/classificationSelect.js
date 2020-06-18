@@ -7,17 +7,17 @@ import { lighten, darken } from 'polished';
 import * as ActivityActions from '../../store/modules/activity/actions';
 
 const options = [
-  { value: 'Incidente', label: 'Incidente', color: '#5B91CC'},
-  { value: 'Consultas', label: 'Consultas', color: '#5B91CC'},
-  { value: 'Diagnostico', label: 'Diagnóstico', color: '#5B91CC'},
-  { value: 'Analise', label: 'Análise', color: '#5B91CC'},
-  { value: 'Projeto', label: 'Projeto', color: '#5B91CC'},
-  { value: 'Construcao', label: 'Construção', color: '#5B91CC'},
-  { value: 'Documentacao', label: 'Documentação', color: '#5B91CC'},
-  { value: 'Homologacao', label: 'Homologação', color: '#5B91CC'},
-  { value: 'Qualidade', label: 'Qualidade', color: '#5B91CC'},
-  { value: 'Implantacao', label: 'Implantação', color: '#5B91CC'},
-  { value: 'GP', label: 'GP', color: '#5B91CC'},
+  { value: 'Incidente', label: 'Incidente', color: '#5B91CC' },
+  { value: 'Consultas', label: 'Consultas', color: '#5B91CC' },
+  { value: 'Diagnostico', label: 'Diagnóstico', color: '#5B91CC' },
+  { value: 'Analise', label: 'Análise', color: '#5B91CC' },
+  { value: 'Projeto', label: 'Projeto', color: '#5B91CC' },
+  { value: 'Construcao', label: 'Construção', color: '#5B91CC' },
+  { value: 'Documentacao', label: 'Documentação', color: '#5B91CC' },
+  { value: 'Homologacao', label: 'Homologação', color: '#5B91CC' },
+  { value: 'Qualidade', label: 'Qualidade', color: '#5B91CC' },
+  { value: 'Implantacao', label: 'Implantação', color: '#5B91CC' },
+  { value: 'GP', label: 'GP', color: '#5B91CC' },
 ];
 
 const DefaultStyles = {
@@ -104,11 +104,23 @@ const DropdownIndicator = () => {
 };
 
 export default function SelectClassification(props) {
+  const { identifier, activity } = props;
   const dispatch = useDispatch();
+
+  const defaultOption = activity
+    ? activity.classification
+      ? {
+          value: activity.classification,
+          label: activity.classification,
+          color: '#5B91CC',
+        }
+      : null
+    : null;
+
 
   function handleSelectedClassification(e) {
     dispatch(
-      ActivityActions.selectedTableClassification(props.identifier, e.value)
+      ActivityActions.selectedTableClassification(identifier, e.value)
     );
   }
   
@@ -117,6 +129,7 @@ export default function SelectClassification(props) {
       styles={DefaultStyles}
       className="classSelect"
       options={options}
+      defaultValue={defaultOption}
       placeholder="Selecione"
       onChange={e => handleSelectedClassification(e)}
       components={{
